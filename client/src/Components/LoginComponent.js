@@ -58,7 +58,7 @@ function Login(props) {
                 authContext.setUser(user);
                 authContext.setIsAuthenticated(isAuthenticated);
                 console.log(authContext.isAuthenticated)
-                props.history.push('/criteria');
+                props.history.push('/department');
             }
             else {
                 setLoginError("Email/Password Incorrect");
@@ -87,7 +87,7 @@ function Login(props) {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
-                                        variant="outlined"
+                                        variant="filled"
                                         required
                                         fullWidth
                                         id="email"
@@ -99,7 +99,7 @@ function Login(props) {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        variant="outlined"
+                                        variant="filled"
                                         required
                                         fullWidth
                                         name="password"

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Login from './LoginComponent';
 import Register from './RegisterComponent';
-import Criteria from './CriteriaComponent';
+import Department from './DepartmentComponent';
 import { AuthContext } from '../Context/AuthContext';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -33,7 +33,7 @@ function Main() {
             <Route path='/register'>
                 <Register />
             </Route>
-            <PrivateRoute path='/criteria' component={Criteria} isAuthenticated={authContext.isAuthenticated} />
+            <PrivateRoute path='/department' component={Department} isAuthenticated={authContext.isAuthenticated} />
         </Switch>
     )
 }

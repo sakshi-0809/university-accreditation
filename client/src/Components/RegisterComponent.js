@@ -12,7 +12,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
-
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Radio from '@material-ui/core/Radio';
 import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +46,7 @@ function Register(props) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [isCoordinator, setIsCoordinator] = useState(false);
     const [registerError, setRegisterError] = useState('');
     const [isValid, setIsValid] = useState({ value: true, msg: '' });
 
@@ -74,7 +78,8 @@ function Register(props) {
                 name: name.trim(),
                 email: email,
                 department: department,
-                password: password
+                password: password,
+                isCoordinator: isCoordinator
             }).then(data => {
                 if (data.message.msgError) {
                     setRegisterError(data.message.msgBody);
@@ -98,6 +103,12 @@ function Register(props) {
             setConfirmPassword(e.target.value);
         } else if (e.target.name === "department") {
             setDepartment(e.target.value);
+        } else if (e.target.name === "coordinator") {
+            if (e.target.value === "yes") {
+                setIsCoordinator(true);
+            } else {
+                setIsCoordinator(false);
+            }
         }
     }
 
@@ -146,7 +157,7 @@ function Register(props) {
                                 <Grid item xs={12}>
                                     <TextField
                                         name="name"
-                                        variant="outlined"
+                                        variant="filled"
                                         required
                                         fullWidth
                                         id="name"
@@ -158,8 +169,8 @@ function Register(props) {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        variant="outlined"
                                         required
+                                        variant="filled"
                                         fullWidth
                                         id="email"
                                         label="Email Address"
@@ -171,8 +182,8 @@ function Register(props) {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        variant="outlined"
                                         required
+                                        variant="filled"
                                         fullWidth
                                         name="password"
                                         label="Password"
@@ -184,8 +195,8 @@ function Register(props) {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        variant="outlined"
                                         required
+                                        variant="filled"
                                         fullWidth
                                         name="confirmPassword"
                                         label="Confirm Password"
@@ -197,7 +208,7 @@ function Register(props) {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControl className={classes.formControl}>
+                                    <FormControl className={classes.formControl} variant={"filled"}>
                                         <InputLabel id="demo-simple-select-label">Department</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
@@ -210,6 +221,15 @@ function Register(props) {
                                             <MenuItem value={"Information Technology"}>Information Technology</MenuItem>
                                             <MenuItem value={"Computer and Communications"}>Computer and Communications</MenuItem>
                                         </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl component="fieldset">
+                                        <FormLabel component="legend">Department Co-ordinator?</FormLabel>
+                                        <RadioGroup aria-label="coordinator" name="coordinator" onChange={handleChange}>
+                                            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                                            <FormControlLabel value="no" control={<Radio />} label="No" />
+                                        </RadioGroup>
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>

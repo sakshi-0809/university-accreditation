@@ -49,10 +49,10 @@ const signToken = userID => {
 
 app.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
     if (req.isAuthenticated()) {
-        const { name, email, _id, department } = req.user;
+        const { name, email, _id, department, isCoordinator } = req.user;
         const token = signToken(_id);
         res.cookie('access_token', token, { httpOnly: true, sameSite: true });
-        res.status(200).json({ isAuthenticated: true, user: { name, email, _id, department } });
+        res.status(200).json({ isAuthenticated: true, user: { name, email, _id, department, isCoordinator } });
     }
 })
 
@@ -73,7 +73,8 @@ app.post('/register', (req, res) => {
                 password: hashedPass,
                 email: req.body.email,
                 name: req.body.name,
-                department: req.body.department
+                department: req.body.department,
+                isCoordinator: req.body.isCoordinator
             });
             await newUser.save(err => {
                 if (err) {
@@ -88,8 +89,8 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/authenticated', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const { name, email, _id, department } = req.user;
-    res.status(200).json({ isAuthenticated: true, user: { name, email, _id, department } });
+    const { name, email, _id, department, isCoordinator } = req.user;
+    res.status(200).json({ isAuthenticated: true, user: { name, email, _id, department, isCoordinator } });
 });
 
 app.listen(4000, () => {
