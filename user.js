@@ -5,7 +5,9 @@ const user = new mongoose.Schema({
     password: String,
     name: String,
     department: String,
-    isCoordinator: Boolean
+    isCoordinator: Boolean,
+    phone: Number,
+    address: String
 });
 
 module.exports = mongoose.model('User', user);

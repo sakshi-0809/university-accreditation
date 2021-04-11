@@ -93,6 +93,39 @@ app.get('/authenticated', passport.authenticate('jwt', { session: false }), (req
     res.status(200).json({ isAuthenticated: true, user: { name, email, _id, department, isCoordinator } });
 });
 
+app.post('/changeprofile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({ email: req.body.email }, async (err, doc) => {
+        if (err)
+            res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+        if (doc) {
+            if (req.body.name !== undefined) {
+                doc.name = req.body.name
+            }
+
+            if (req.body.phone !== undefined) {
+                doc.phone = req.body.phone
+            }
+
+            if (req.body.address !== undefined) {
+                doc.address = req.body.address;
+            }
+
+            if (req.body.changePassword) {
+                doc.password = await bcrypt.hash(req.body.newPassword, 10);
+            }
+
+            await doc.save(err => {
+                if (err) {
+                    res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+                }
+                else {
+                    res.status(201).json({ message: { msgBody: 'Changes successfully saved', msgError: false } });
+                }
+            })
+        }
+    })
+});
+
 app.listen(4000, () => {
     console.log('Listening at port 4000');
 });

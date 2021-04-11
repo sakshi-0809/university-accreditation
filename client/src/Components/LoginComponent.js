@@ -124,7 +124,7 @@ function Login(props) {
                                 Login
                             </Button>
                             <Grid item >
-                                <Box pt={1} color="primary.main">
+                                <Box pt={1}>
                                     <Link to="/register" className="register-option">
                                         Don't have an account? Sign Up
                                     </Link>

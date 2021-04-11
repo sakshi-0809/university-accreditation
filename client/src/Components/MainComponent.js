@@ -1,9 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Login from './LoginComponent';
 import Register from './RegisterComponent';
 import Department from './DepartmentComponent';
+import Profile from './ProfileComponent';
+import CriteriaFive from './CriteraFiveComponent';
 import { AuthContext } from '../Context/AuthContext';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
@@ -17,23 +21,36 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     )
 }
 
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            // Purple and green play nicely together.
+            main: '#001064',
+            dark: '#00003a',
+        },
+    },
+});
+
 function Main() {
     const authContext = useContext(AuthContext);
-    // const [notes, setNotes] = useState([{}]);
-
-    // useEffect(() => {
-    //     setNotes(authContext.user.notes);
-    // }, [authContext.user.notes])
 
     return (
         <Switch>
-            <Route exact path='/'>
-                <Login />
-            </Route>
-            <Route path='/register'>
-                <Register />
-            </Route>
-            <PrivateRoute path='/department' component={Department} isAuthenticated={authContext.isAuthenticated} />
+            <ThemeProvider theme={theme}>
+                <Route exact path='/'>
+                    <Login />
+                </Route>
+                <Route path='/register'>
+                    <Register />
+                </Route>
+                <PrivateRoute path='/department' component={Department} isAuthenticated={authContext.isAuthenticated} />
+                <Route path='/profile' >
+                    <Profile isAuthenticated={authContext.isAuthenticated} />
+                </Route>
+                <Route path='/criteria5' >
+                    <CriteriaFive isAuthenticated={authContext.isAuthenticated} />
+                </Route>
+            </ThemeProvider>
         </Switch>
     )
 }
