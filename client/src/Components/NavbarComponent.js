@@ -58,7 +58,7 @@ function Navbar(props) {
                         {authContext.user.department}
                     </Typography>
                     <div>
-                        <Typography variant="h7" className={classes.title}>
+                        <Typography className={classes.name}>
                             {authContext.user.name}
                         </Typography>
                     </div>

@@ -24,7 +24,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 const theme = createMuiTheme({
     palette: {
         primary: {
-            // Purple and green play nicely together.
             main: '#001064',
             dark: '#00003a',
         },

@@ -57,7 +57,6 @@ function Login(props) {
             if (isAuthenticated) {
                 authContext.setUser(user);
                 authContext.setIsAuthenticated(isAuthenticated);
-                console.log(authContext.isAuthenticated)
                 props.history.push('/department');
             }
             else {

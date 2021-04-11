@@ -1,3 +1,28 @@
+/* Scrollbar  */
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #182464;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+    background-color: #001064;
+}
+
+body::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #131346;
+}
+
+body {
+    background-color: #f7f7f7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .register-option {
     color: #001064;
     text-decoration: none;
@@ -5,10 +30,6 @@
     margin-top: 50px;
 }
 
-.register-option:hover{
+.register-option:hover {
     text-decoration: underline;
-}
-
-body {
-    background-color: #f7f7f7;
 }
