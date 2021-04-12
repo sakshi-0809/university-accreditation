@@ -4,7 +4,8 @@ import Login from './LoginComponent';
 import Register from './RegisterComponent';
 import Department from './DepartmentComponent';
 import Profile from './ProfileComponent';
-import CriteriaFive from './CriteraFiveComponent';
+import CriteriaFive from '../Criteria/CriteraFive';
+import CriteriaFiveDetails from '../CriteriaDetails/CriteriaFiveDetails';
 import { AuthContext } from '../Context/AuthContext';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -43,12 +44,9 @@ function Main() {
                     <Register />
                 </Route>
                 <PrivateRoute path='/department' component={Department} isAuthenticated={authContext.isAuthenticated} />
-                <Route path='/profile' >
-                    <Profile isAuthenticated={authContext.isAuthenticated} />
-                </Route>
-                <Route path='/criteria5' >
-                    <CriteriaFive isAuthenticated={authContext.isAuthenticated} />
-                </Route>
+                <PrivateRoute path='/profile' component={Profile} isAuthenticated={authContext.isAuthenticated} />
+                <PrivateRoute path='/criteria5' component={CriteriaFive} isAuthenticated={authContext.isAuthenticated} />
+                <PrivateRoute path='/criteria5details' component={CriteriaFiveDetails} isAuthenticated={authContext.isAuthenticated} />
             </ThemeProvider>
         </Switch>
     )

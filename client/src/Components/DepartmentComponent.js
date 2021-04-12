@@ -26,14 +26,21 @@ const useStyles = makeStyles((theme) => ({
     },
     cardContent: {
         color: '#343434'
+    },
+    button: {
+        marginRight: theme.spacing(2)
     }
 }));
 
 function CriteriaCard(props) {
     const classes = useStyles();
 
-    const handleClick = () => {
+    const handleOpen = () => {
         props.history.push(`/criteria${props.number}`);
+    }
+
+    const handleView = () => {
+        props.history.push(`/criteria${props.number}details`)
     }
 
     return (
@@ -50,7 +57,8 @@ function CriteriaCard(props) {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color="primary" onClick={handleClick}>Open Criteria Page</Button>
+                    <Button size="small" color="primary" onClick={handleOpen} className={classes.button}>Open Criteria Page</Button>
+                    <Button size="small" color="primary" onClick={handleView}>View Criteria Details</Button>
                 </CardActions>
             </Card>
         </Grid>

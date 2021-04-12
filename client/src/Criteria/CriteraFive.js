@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router';
 import { subCategory1 } from '../Data/subCategoryFields';
 // import { subCategory2 } from '../Data/subCategoryFields';
@@ -14,19 +14,20 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Navbar from './NavbarComponent';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import Navbar from '../Components/NavbarComponent';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Alert from '@material-ui/lab/Alert';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import Radio from '@material-ui/core/Radio';
-import Container from '@material-ui/core/Container';
+import { AuthContext } from '../Context/AuthContext';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
+// import CssBaseline from '@material-ui/core/CssBaseline';
+// import Alert from '@material-ui/lab/Alert';
+// import RadioGroup from '@material-ui/core/RadioGroup';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormLabel from '@material-ui/core/FormLabel';
+// import Radio from '@material-ui/core/Radio';
+// import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         marginTop: theme.spacing(3),
     },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
     paper: {
         margin: theme.spacing(4),
     },
@@ -49,13 +53,12 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: "500px",
     },
     subCategory: {
-        marginLeft: theme.spacing(4),
         marginTop: theme.spacing(2),
         fontSize: "18px",
         color: "#717171"
     },
     subSubCategory: {
-        marginLeft: theme.spacing(6),
+        marginLeft: theme.spacing(4),
         marginTop: theme.spacing(2),
         fontSize: "17px",
         color: "#717171"
@@ -65,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 function SubCategory(props) {
     const classes = useStyles();
     const [data, setData] = useState([]);
+    const authContext = useContext(AuthContext);
 
     useEffect(() => {
         setData(props.subCategoryData);
@@ -75,17 +79,17 @@ function SubCategory(props) {
             props.data.map(sub => {
                 if (sub.type === "text") {
                     return (
-                        <Grid item xs={6}>
+                        <Grid key={sub.title} item xs={6}>
                             <TextField
                                 name={sub.title}
+                                key={sub.title}
                                 variant="filled"
                                 fullWidth
                                 multiline
-                                rows="3"
+                                rows="2"
                                 id="text"
                                 label={sub.title}
                                 onChange={props.handleChange}
-                                onBlur={props.handleBlur}
                                 InputProps={{
                                     className: classes.textField
                                 }}
@@ -94,8 +98,9 @@ function SubCategory(props) {
                     )
                 } else if (sub.type === "date") {
                     return (
-                        <Grid item xs={6}>
+                        <Grid key={sub.title} item xs={6}>
                             <TextField
+                                key={sub.title}
                                 id="date"
                                 name={sub.title}
                                 label={sub.title}
@@ -113,8 +118,7 @@ function SubCategory(props) {
                     )
                 } else {
                     return (
-                        <Grid>
-
+                        <Grid key={sub.title}>
                         </Grid>
                     )
                 }
@@ -122,27 +126,43 @@ function SubCategory(props) {
     }
 
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        const updateData = {
+            criteria: 5,
+            department: authContext.user.department,
+            name: authContext.user.name,
+            email: authContext.user.email,
+            data: data
+        }
 
+        e.preventDefault();
+
+        fetch('/updatedetails', {
+            method: 'post',
+            body: JSON.stringify(updateData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json()).then(data => {
+                console.log(data.message.msgError);
+                console.log(data.message.msgBody);
+            });
     }
 
     const handleChange = (e) => {
         data.map(sub => {
             if (sub.title === e.target.name) {
                 if (sub.type === "date") {
-                    console.log(e.target.value.toString());
                     sub.value = e.target.value.toString();
                 } else {
                     sub.value = e.target.value
                 }
             }
+            return 0;
         })
 
         setData(data);
-    }
-
-    const handleBlur = (e) => {
-        console.log(data);
     }
 
     return (
@@ -150,10 +170,19 @@ function SubCategory(props) {
             <Typography className={classes.subCategory}>
                 {props.subCategoryHeading}
             </Typography>
+
             <form className={classes.form} onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
-                    <SubRender data={data} handleChange={handleChange} handleBlur={handleBlur} />
+                    <SubRender data={data} handleChange={handleChange} />
                 </Grid>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    Submit
+                </Button>
             </form>
         </div>
     )
@@ -182,6 +211,7 @@ function CriteriaFive(props) {
 
         subCategory1.map(sub => {
             const field = {
+                key: sub.key,
                 title: sub.title,
                 type: sub.type,
                 value: ''

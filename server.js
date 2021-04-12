@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const User = require('./user');
+const CriteriaFive = require('./criteriaFive');
 const JWT = require('jsonwebtoken');
 const passportConfig = require('./passportConfig');
 const metaphone = require('metaphone');
@@ -125,6 +126,107 @@ app.post('/changeprofile', passport.authenticate('jwt', { session: false }), (re
         }
     })
 });
+
+app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (req, res) => {
+    if (req.body.criteria === 5) {
+        CriteriaFive.findOne({ email: req.body.email }, async (err, doc) => {
+            if (err)
+                res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+            if (doc) {
+                req.body.data.map(sub => {
+                    if (sub.key === "subCategory1") {
+                        if (sub.title === "Designation" && sub.value !== '') {
+                            doc.subCategory1.designation = sub.value;
+                        } else if (sub.title === "Salary Details" && sub.value !== '') {
+                            doc.subCategory1.salary = sub.value;
+                        } else if (sub.title === "Publications" && sub.value !== '') {
+                            doc.subCategory1.publications = sub.value;
+                        } else if (sub.title === "Joining Date" && sub.value !== '') {
+                            doc.subCategory1.joiningDate = sub.value;
+                        } else if (sub.title === "Research Interactions" && sub.value !== '') {
+                            doc.subCategory1.researchInteractions = sub.value;
+                        }
+                    }
+                });
+
+                await doc.save(err => {
+                    if (err) {
+                        res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+                    }
+                    else {
+                        res.status(201).json({ message: { msgBody: 'Changes successfully saved', msgError: false } });
+                    }
+                })
+            }
+            else if (!doc) {
+                const newData = new CriteriaFive({
+                    department: req.body.department,
+                    name: req.body.name,
+                    email: req.body.email,
+                    subCategory1: {
+                        salary: 0,
+                        designation: '',
+                        qualifications: '',
+                        joiningDate: new Date(),
+                        publications: '',
+                        researchInteractions: '',
+                    },
+                    subCategory4: {
+                        joiningDate: new Date(),
+                    },
+                    subCategory5: {
+                        specialization: '',
+                        publications: [],
+                        courseDevelopments: [],
+                    },
+                    subCategory6: {
+                        workshops: [],
+                        courseModules: []
+                    }
+                });
+
+                req.body.data.map(sub => {
+                    if (sub.key === "subCategory1") {
+                        if (sub.title === "Designation") {
+                            newData.subCategory1.designation = sub.value;
+                        } else if (sub.title === "Salary Details") {
+                            newData.subCategory1.salary = sub.value;
+                        } else if (sub.title === "Publications") {
+                            newData.subCategory1.publications = sub.value;
+                        } else if (sub.title === "Joining Date") {
+                            newData.subCategory1.joiningDate = sub.value;
+                        } else if (sub.title === "Research Interactions") {
+                            newData.subCategory1.researchInteractions = sub.value;
+                        }
+                    }
+                });
+
+                await newData.save(err => {
+                    if (err) {
+                        res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+                    }
+                    else {
+                        res.status(201).json({ message: { msgBody: 'Changes successfully saved', msgError: false } });
+                    }
+                })
+            }
+        })
+    }
+});
+
+app.get('/fetchcriteria5', passport.authenticate('jwt', { session: false }), (req, res) => {
+    // const { name, email, _id, department, isCoordinator } = req.user;
+    const { email } = req.user;
+    CriteriaFive.findOne({ email: email }, async (err, doc) => {
+        if (err)
+            res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+        if (doc) {
+            res.status(200).json({ message: { msgBody: 'Success', msgError: false }, data: doc });
+        } else if (!doc) {
+            res.status(200).json({ message: { msgBody: 'Data not found', msgError: true } });
+        }
+    })
+})
 
 app.listen(4000, () => {
     console.log('Listening at port 4000');

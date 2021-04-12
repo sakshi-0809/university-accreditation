@@ -4,23 +4,23 @@ const criteriaFive = new mongoose.Schema({
     department: String,
     facultyName: String,
     email: String,
-    studentFacultyRatio: {
+    subCategory1: {
         salary: Number,
         designation: String,
         qualifications: String,
         joiningDate: Date,
-        publications: [String],
-        researchInteractions: [String],
+        publications: String,
+        researchInteractions: String,
     },
-    facultyRetention: {
+    subCategory4: {
         joiningDate: Date,
     },
-    facultyCompetencies: {
+    subCategory5: {
         specialization: String,
         publications: [String],
         courseDevelopments: [String],
     },
-    facultyInnovations: {
+    subCategory6: {
         workshops: [String],
         courseModules: [String]
     }
