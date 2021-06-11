@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router';
 import { subCategory1 } from '../Data/subCategoryFields';
+import { subCategory5 } from '../Data/subCategoryFields';
+import { subCategory6 } from '../Data/subCategoryFields';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import Navbar from '../Components/NavbarComponent';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,11 +35,20 @@ const useStyles = makeStyles((theme) => ({
 const SubCategory = (props) => {
     const classes = useStyles();
 
+    const columns = [
+        { field: 'id', headerName: 'S.No.', width: 90 },
+        { field: 'parameter', headerName: 'Parameter', width: 250, sortable: false },
+        { field: 'value', headerName: 'Value', width: 600, sortable: false }
+    ]
+
     return (
         <div className={classes.paper}>
             <Typography className={classes.subCategory}>
                 {props.subCategoryHeading}
             </Typography>
+            <div className="table">
+                <DataGrid autoHeight rows={props.subCategoryData} columns={columns} pageSize={8} checkboxSelection components={{ Toolbar: GridToolbar }} />
+            </div>
         </div>
     )
 }
@@ -44,18 +56,26 @@ const SubCategory = (props) => {
 function CriteriaFiveDetails(props) {
     const classes = useStyles();
     const [subCategoryData1, setSubCategoryData1] = useState([]);
+    const [subCategoryData5, setSubCategoryData5] = useState([]);
+    const [subCategoryData6, setSubCategoryData6] = useState([]);
+    const [dataMsg, setDataMsg] = useState('');
 
     useEffect(() => {
         let data = [];
+        let rows = [];
+        var count = 0;
 
         subCategory1.map(sub => {
-            const field = {
-                key: sub.key,
-                title: sub.title,
-                type: sub.type,
-                value: ''
+            //not displaying upload fields right now
+            if (sub.type !== "upload") {
+                const field = {
+                    key: sub.key,
+                    title: sub.title,
+                    type: sub.type,
+                    value: sub.value !== '' ? sub.value : '-'
+                }
+                data.push(field);
             }
-            data.push(field);
             return 0;
         });
 
@@ -70,25 +90,44 @@ function CriteriaFiveDetails(props) {
             }
 
         }).then(doc => {
-            data.map(sub => {
-                if (sub.key === "subCategory1") {
-                    if (sub.title === "Salary Details") {
-                        sub.value = doc.data.subCategory1.salary;
-                    } else if (sub.title === "Designation") {
-                        sub.value = doc.data.subCategory1.designation;
-                    } else if (sub.title === "Publications") {
-                        sub.value = doc.data.subCategory1.publications;
-                    } else if (sub.title === "Joining Date") {
-                        sub.value = doc.data.subCategory1.joiningDate;
-                    } else if (sub.title === "Research Interactions") {
-                        sub.value = doc.data.subCategory1.researchInteractions;
+            if (doc.message.msgError !== true) {
+                data.map(sub => {
+                    if (sub.key === "subCategory1") {
+                        if (sub.title === "Salary Details" && doc.data.subCategory1.salary !== "") {
+                            sub.value = doc.data.subCategory1.salary;
+                        } else if (sub.title === "Designation" && doc.data.subCategory1.designation !== "") {
+                            sub.value = doc.data.subCategory1.designation;
+                        } else if (sub.title === "Publications" && doc.data.subCategory1.publications !== "") {
+                            sub.value = doc.data.subCategory1.publications;
+                        } else if (sub.title === "Joining Date" && doc.data.subCategory1.joiningDate !== "") {
+                            sub.value = doc.data.subCategory1.joiningDate.split('T')[0]
+                        } else if (sub.title === "Research Interactions" && doc.data.subCategory1.researchInteractions !== "") {
+                            sub.value = doc.data.subCategory1.researchInteractions;
+                        } else if (sub.title === "Faculty Qualifications" && doc.data.subCategory1.qualifications !== "") {
+                            sub.value = doc.data.subCategory1.qualifications;
+                        }
                     }
-                }
+                    return 0;
+                })
+            }
+            else {
+                setDataMsg("No Data has been added yet");
+            }
+            return data;
+        }).then(data => {
+            data.map(d => {
+                rows.push({
+                    id: ++count,
+                    parameter: d.title,
+                    value: d.value
+                })
                 return 0;
             })
+
+            setSubCategoryData1(rows);
         });
 
-        setSubCategoryData1(data);
+
     }, [props])
 
     return (
@@ -99,7 +138,11 @@ function CriteriaFiveDetails(props) {
                 Faculty Infomation and Contribution
             </Typography>
 
-            <SubCategory subCategoryHeading={"Student Faculty Ratio"} subCategoryData={subCategoryData1} />
+            {dataMsg === '' ? <SubCategory subCategoryHeading={"Student Faculty Ratio"} subCategoryData={subCategoryData1} /> : null}
+
+            {dataMsg === '' ? <SubCategory subCategoryHeading={"Faculty Competencies in correlation to Program Specific Criteria"} subCategoryData={subCategoryData5} /> : null}
+
+            {dataMsg !== '' ? <Alert severity="warning">{dataMsg}</Alert> : null}
         </div>
     )
 }

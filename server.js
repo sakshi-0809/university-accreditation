@@ -99,15 +99,15 @@ app.post('/changeprofile', passport.authenticate('jwt', { session: false }), (re
         if (err)
             res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
         if (doc) {
-            if (req.body.name !== undefined) {
+            if (req.body.name !== '') {
                 doc.name = req.body.name
             }
 
-            if (req.body.phone !== undefined) {
+            if (req.body.phone !== '') {
                 doc.phone = req.body.phone
             }
 
-            if (req.body.address !== undefined) {
+            if (req.body.address !== '') {
                 doc.address = req.body.address;
             }
 
@@ -145,12 +145,36 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                             doc.subCategory1.joiningDate = sub.value;
                         } else if (sub.title === "Research Interactions" && sub.value !== '') {
                             doc.subCategory1.researchInteractions = sub.value;
+                        } else if (sub.title === "Faculty Qualifications" && sub.value !== '') {
+                            doc.subCategory1.qualifications = sub.value;
+                        }
+                    }
+
+                    else if (sub.key === "subCategory5") {
+                        console.log(sub.value);
+                        if (sub.title === "Specialization" && sub.value !== '') {
+                            doc.subCategory5.specialization = sub.value;
+                        } else if (sub.title === "Course Developments" && sub.value !== '') {
+                            doc.subCategory5.courseDevelopments = sub.value;
+                        } else if (sub.title === "Research Publication" && sub.value !== '') {
+                            doc.subCategory5.publications = sub.value;
+                        }
+                    }
+
+                    else if (sub.key === "subCategory6") {
+                        if (sub.title === "WorkShops Arranged" && sub.value !== '') {
+                            doc.subCategory5.workshops = sub.value;
+                        } else if (sub.title === "Course Modules Developed" && sub.value !== '') {
+                            doc.subCategory5.courseModules = sub.value;
+                        } else if (sub.title === "Short Term Courses" && sub.value !== '') {
+                            doc.subCategory5.shortTermCourses = sub.value;
                         }
                     }
                 });
 
                 await doc.save(err => {
                     if (err) {
+                        console.log(err)
                         res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
                     }
                     else {
@@ -176,12 +200,13 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                     },
                     subCategory5: {
                         specialization: '',
-                        publications: [],
-                        courseDevelopments: [],
+                        publications: '',
+                        courseDevelopments: '',
                     },
                     subCategory6: {
-                        workshops: [],
-                        courseModules: []
+                        workshops: '',
+                        courseModules: '',
+                        shortTermCourses: ''
                     }
                 });
 
@@ -197,6 +222,28 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                             newData.subCategory1.joiningDate = sub.value;
                         } else if (sub.title === "Research Interactions") {
                             newData.subCategory1.researchInteractions = sub.value;
+                        } else if (sub.title === "Faculty Qualifications") {
+                            newData.subCategory1.qualifications = sub.value;
+                        }
+                    }
+
+                    else if (sub.key === "subCategory5") {
+                        if (sub.title === "Specialization") {
+                            newData.subCategory5.specialization = sub.value;
+                        } else if (sub.title === "Course Developments") {
+                            newData.subCategory5.courseDevelopments = sub.value;
+                        } else if (sub.title === "Research Publication") {
+                            newData.subCategory5.publications = sub.value;
+                        }
+                    }
+
+                    else if (sub.key === "subCategory6") {
+                        if (sub.title === "WorkShops Arranged") {
+                            newData.subCategory5.workshops = sub.value;
+                        } else if (sub.title === "Course Modules Developed") {
+                            newData.subCategory5.courseModules = sub.value;
+                        } else if (sub.title === "Short Term Courses") {
+                            newData.subCategory5.shortTermCourses = sub.value;
                         }
                     }
                 });
@@ -212,6 +259,7 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
             }
         })
     }
+
 });
 
 app.get('/fetchcriteria5', passport.authenticate('jwt', { session: false }), (req, res) => {

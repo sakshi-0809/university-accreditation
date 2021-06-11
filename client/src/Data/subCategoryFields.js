@@ -1,15 +1,15 @@
 export const subCategory1 = [
-    { title: 'Appointment Letters', type: 'upload', key: 'subCategory1' },
-    { title: 'Time Table', type: 'upload', key: 'subCategory1' },
-    { title: 'Salary Statement', type: 'upload', key: 'subCategory1' },
-    { title: 'Faculty Qualifications', type: 'text', key: 'subCategory1' },
-    { title: 'Salary Details', type: 'text', key: 'subCategory1' },
-    { title: 'Awards/Certificates', type: 'upload', key: 'subCategory1' },
-    { title: 'Designation', type: 'text', key: 'subCategory1' },
-    { title: 'Publications', type: 'text', key: 'subCategory1' },
-    { title: 'Research Interactions', type: 'text', key: 'subCategory1' },
-    { title: 'List of Students', type: 'upload', key: 'subCategory1' },
-    { title: 'Joining Date', type: 'date', key: 'subCategory1' }
+    { title: 'Appointment Letters', type: 'upload', key: 'subCategory1', value: '' },
+    { title: 'Time Table', type: 'upload', key: 'subCategory1', value: '' },
+    { title: 'Salary Statement', type: 'upload', key: 'subCategory1', value: '' },
+    { title: 'Faculty Qualifications', type: 'textArea', key: 'subCategory1', value: '' },
+    { title: 'Salary Details', type: 'text', key: 'subCategory1', value: 0 },
+    { title: 'Awards/Certificates', type: 'upload', key: 'subCategory1', value: '' },
+    { title: 'Designation', type: 'text', key: 'subCategory1', value: '' },
+    { title: 'Publications', type: 'textArea', key: 'subCategory1', value: '' },
+    { title: 'Research Interactions', type: 'textArea', key: 'subCategory1', value: '' },
+    { title: 'List of Students', type: 'upload', key: 'subCategory1', value: '' },
+    { title: 'Joining Date', type: 'date', key: 'subCategory1', value: new Date() }
 ];
 
 export const subCategory2 = [
@@ -29,19 +29,19 @@ export const subCategory4 = [
 ];
 
 export const subCategory5 = [
-    { title: 'Specialization', type: 'text' },
-    { title: 'Research Publication', type: 'text' },
-    { title: 'Course Developments', type: 'text' },
+    { title: 'Specialization', type: 'textArea', key: 'subCategory5', value: '' },
+    { title: 'Research Publication', type: 'textArea', key: 'subCategory5', value: '' },
+    { title: 'Course Developments', type: 'textArea', key: 'subCategory5', value: '' },
 ];
 
 export const subCategory6 = [
-    { title: 'Workshops Arranged', type: 'text' },
-    { title: 'Course Modules Developed', type: 'text' },
-    { title: 'Short Term Courses', type: 'text' },
+    { title: 'Workshops Arranged', type: 'textArea', key: 'subCategory6', value: '' },
+    { title: 'Course Modules Developed', type: 'textArea', key: 'subCategory6', value: '' },
+    { title: 'Short Term Courses', type: 'textArea', key: 'subCategory6', value: '' },
 ];
 
 export const subCategory7 = [
-    { title: 'Details of Training/Development Program', type: 'text' },
+    { title: 'Details of Training/Development Program', type: 'textArea' },
     { title: 'Number of days', type: 'text' },
     { title: 'Certificate', type: 'upload' },
     { title: 'Do you want to enter more programs?', type: 'radio' }

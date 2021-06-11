@@ -57,8 +57,8 @@ function CriteriaCard(props) {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color="primary" onClick={handleOpen} className={classes.button}>Open Criteria Page</Button>
-                    <Button size="small" color="primary" onClick={handleView}>View Criteria Details</Button>
+                    <Button size="small" color="primary" onClick={handleOpen} className={classes.button}>Open Criterion Page</Button>
+                    <Button size="small" color="primary" onClick={handleView}>View Criterion Details</Button>
                 </CardActions>
             </Card>
         </Grid>

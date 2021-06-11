@@ -17,12 +17,13 @@ const criteriaFive = new mongoose.Schema({
     },
     subCategory5: {
         specialization: String,
-        publications: [String],
-        courseDevelopments: [String],
+        publications: String,
+        courseDevelopments: String,
     },
     subCategory6: {
-        workshops: [String],
-        courseModules: [String]
+        workshops: String,
+        courseModules: String,
+        shortTermCourses: String
     }
 });
 

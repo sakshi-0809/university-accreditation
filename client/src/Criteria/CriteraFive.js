@@ -4,8 +4,8 @@ import { subCategory1 } from '../Data/subCategoryFields';
 // import { subCategory2 } from '../Data/subCategoryFields';
 // import { subCategory3 } from '../Data/subCategoryFields';
 // import { subCategory4 } from '../Data/subCategoryFields';
-// import { subCategory5 } from '../Data/subCategoryFields';
-// import { subCategory6 } from '../Data/subCategoryFields';
+import { subCategory5 } from '../Data/subCategoryFields';
+import { subCategory6 } from '../Data/subCategoryFields';
 // import { subCategory7 } from '../Data/subCategoryFields';
 // import { subCategory8 } from '../Data/subCategoryFields';
 // import { subCategory9 } from '../Data/subCategoryFields';
@@ -22,7 +22,7 @@ import { AuthContext } from '../Context/AuthContext';
 // import FormControl from '@material-ui/core/FormControl';
 // import Select from '@material-ui/core/Select';
 // import CssBaseline from '@material-ui/core/CssBaseline';
-// import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert';
 // import RadioGroup from '@material-ui/core/RadioGroup';
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
 // import FormLabel from '@material-ui/core/FormLabel';
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 function SubCategory(props) {
     const classes = useStyles();
     const [data, setData] = useState([]);
+    const [msgSubmit, setMsgSubmit] = useState({ msg: '', error: false });
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
@@ -78,6 +79,23 @@ function SubCategory(props) {
         return (
             props.data.map(sub => {
                 if (sub.type === "text") {
+                    return (
+                        <Grid key={sub.title} item xs={6}>
+                            <TextField
+                                name={sub.title}
+                                key={sub.title}
+                                variant="filled"
+                                fullWidth
+                                id="text"
+                                label={sub.title}
+                                onChange={props.handleChange}
+                                InputProps={{
+                                    className: classes.textField
+                                }}
+                            />
+                        </Grid>
+                    )
+                } else if (sub.type === "textArea") {
                     return (
                         <Grid key={sub.title} item xs={6}>
                             <TextField
@@ -132,7 +150,7 @@ function SubCategory(props) {
             department: authContext.user.department,
             name: authContext.user.name,
             email: authContext.user.email,
-            data: data
+            data: data,
         }
 
         e.preventDefault();
@@ -145,8 +163,7 @@ function SubCategory(props) {
             }
         })
             .then(data => data.json()).then(data => {
-                console.log(data.message.msgError);
-                console.log(data.message.msgBody);
+                setMsgSubmit({ msg: data.message.msgBody, error: data.message.msgError })
             });
     }
 
@@ -156,7 +173,7 @@ function SubCategory(props) {
                 if (sub.type === "date") {
                     sub.value = e.target.value.toString();
                 } else {
-                    sub.value = e.target.value
+                    sub.value = e.target.value;
                 }
             }
             return 0;
@@ -184,6 +201,8 @@ function SubCategory(props) {
                     Submit
                 </Button>
             </form>
+
+            {msgSubmit.msg !== '' ? <Alert severity={msgSubmit.error === false ? "success" : "error"}>{msgSubmit.msg}</Alert> : null}
         </div>
     )
 }
@@ -205,9 +224,13 @@ function SubSubCategory(props) {
 function CriteriaFive(props) {
     const classes = useStyles();
     const [subCategoryData1, setSubCategoryData1] = useState([]);
+    const [subCategoryData5, setSubCategoryData5] = useState([]);
+    const [subCategoryData6, setSubCategoryData6] = useState([]);
 
     useEffect(() => {
-        let data = [];
+        let data1 = [];
+        let data5 = [];
+        let data6 = [];
 
         subCategory1.map(sub => {
             const field = {
@@ -216,11 +239,35 @@ function CriteriaFive(props) {
                 type: sub.type,
                 value: ''
             }
-            data.push(field);
+            data1.push(field);
             return 0;
         });
 
-        setSubCategoryData1(data);
+        subCategory5.map(sub => {
+            const field = {
+                key: sub.key,
+                title: sub.title,
+                type: sub.type,
+                value: ''
+            }
+            data5.push(field);
+            return 0;
+        });
+
+        subCategory6.map(sub => {
+            const field = {
+                key: sub.key,
+                title: sub.title,
+                type: sub.type,
+                value: ''
+            }
+            data6.push(field);
+            return 0;
+        });
+
+        setSubCategoryData1(data1);
+        setSubCategoryData5(data5);
+        setSubCategoryData6(data6);
     }, [props])
 
     return (
@@ -232,18 +279,18 @@ function CriteriaFive(props) {
             </Typography>
 
             <SubCategory subCategoryHeading={"Student Faculty Ratio"} subCategoryData={subCategoryData1} />
-
-            {/* <SubCategory subCategoryHeading={"Faculty Cadre Proportion"} />
+            {/* 
+            <SubCategory subCategoryHeading={"Faculty Cadre Proportion"} />
 
             <SubCategory subCategoryHeading={"Faculty Qualification"} />
 
-            <SubCategory subCategoryHeading={"Faculty Retention"} />
+            <SubCategory subCategoryHeading={"Faculty Retention"} /> */}
 
-            <SubCategory subCategoryHeading={"Faculty Competencies in correlation to Program Specific Criteria"} />
+            <SubCategory subCategoryHeading={"Faculty Competencies in correlation to Program Specific Criteria"} subCategoryData={subCategoryData5} />
 
-            <SubCategory subCategoryHeading={"Innovations by the Faculty in Teaching and Learning"} />
+            <SubCategory subCategoryHeading={"Innovations by the Faculty in Teaching and Learning"} subCategoryData={subCategoryData6} />
 
-            <SubCategory subCategoryHeading={"Faculty as Participants in Faculty Development/Training Activities/STTPs"} />
+            {/* <SubCategory subCategoryHeading={"Faculty as Participants in Faculty Development/Training Activities/STTPs"} />
 
             <SubCategory subCategoryHeading={"Research and Development"} />
             <SubSubCategory subSubCategory={"Academic Research"} />
