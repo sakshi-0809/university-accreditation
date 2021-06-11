@@ -23,6 +23,7 @@ import { AuthContext } from '../Context/AuthContext';
 // import Select from '@material-ui/core/Select';
 // import CssBaseline from '@material-ui/core/CssBaseline';
 import Alert from '@material-ui/lab/Alert';
+import Link from '@material-ui/core/Link';
 // import RadioGroup from '@material-ui/core/RadioGroup';
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
 // import FormLabel from '@material-ui/core/FormLabel';
@@ -57,23 +58,49 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "18px",
         color: "#717171"
     },
+    uploadLinks: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+        fontSize: "17px",
+        color: "#717171"
+    },
     subSubCategory: {
         marginLeft: theme.spacing(4),
         marginTop: theme.spacing(2),
         fontSize: "17px",
         color: "#717171"
+    },
+    input: {
+        display: 'none'
     }
 }));
 
+function RenderLinks(props) {
+    const [links, setLinks] = useState([]);
+
+    useEffect(() => {
+        setLinks(props.data);
+    }, [props])
+
+    return (
+        links.map(link => {
+            return <Link href={link.value} target="blank" color="inherit">
+                {link.title}
+            </Link>
+        })
+    )
+}
+
 function SubCategory(props) {
     const classes = useStyles();
+    const [links, setLinks] = useState([]);
     const [data, setData] = useState([]);
     const [msgSubmit, setMsgSubmit] = useState({ msg: '', error: false });
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
         setData(props.subCategoryData);
-    }, [props]);
+    }, [props, links]);
 
     const SubRender = (props) => {
         return (
@@ -134,9 +161,23 @@ function SubCategory(props) {
                             />
                         </Grid>
                     )
-                } else {
+                } else if (sub.type === "upload") {
                     return (
-                        <Grid key={sub.title}>
+                        <Grid key={sub.title} item xs={6}>
+                            <input
+                                // accept="image/*"
+                                id={sub.title}
+                                multiple
+                                type="file"
+                                name={sub.title}
+                                onChange={props.handleChange}
+                                className={classes.input}
+                            />
+                            <label htmlFor={sub.title}>
+                                <Button variant="contained" color="primary" component="span">
+                                    {sub.title}
+                                </Button>
+                            </label>
                         </Grid>
                     )
                 }
@@ -172,13 +213,32 @@ function SubCategory(props) {
             if (sub.title === e.target.name) {
                 if (sub.type === "date") {
                     sub.value = e.target.value.toString();
+                } else if (sub.type === "upload") {
+                    sub.value = e.target.files[0];
+
+                    const url = 'https://api.cloudinary.com/v1_1/dbfaofb93/image/upload';
+                    const formData = new FormData();
+
+                    formData.append('file', e.target.files[0]);
+                    formData.append('upload_preset',
+                        "ml_default");
+
+                    fetch(url, {
+                        method: "POST",
+                        body: formData
+                    }).then((res) => {
+                        return res.json()
+                    }).then((data) => {
+                        sub.value = data.url;
+                        setLinks([...links, { title: sub.title, value: data.url }]);
+                        console.log(sub.value);
+                    })
                 } else {
                     sub.value = e.target.value;
                 }
             }
             return 0;
         })
-
         setData(data);
     }
 
@@ -187,6 +247,12 @@ function SubCategory(props) {
             <Typography className={classes.subCategory}>
                 {props.subCategoryHeading}
             </Typography>
+
+            <Typography className={classes.uploadLinks}>
+                Uploaded Files
+            </Typography>
+
+            <RenderLinks data={links} />
 
             <form className={classes.form} onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -268,6 +334,7 @@ function CriteriaFive(props) {
         setSubCategoryData1(data1);
         setSubCategoryData5(data5);
         setSubCategoryData6(data6);
+
     }, [props])
 
     return (

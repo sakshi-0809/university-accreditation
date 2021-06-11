@@ -66,16 +66,13 @@ function CriteriaFiveDetails(props) {
         var count = 0;
 
         subCategory1.map(sub => {
-            //not displaying upload fields right now
-            if (sub.type !== "upload") {
-                const field = {
-                    key: sub.key,
-                    title: sub.title,
-                    type: sub.type,
-                    value: sub.value !== '' ? sub.value : '-'
-                }
-                data.push(field);
+            const field = {
+                key: sub.key,
+                title: sub.title,
+                type: sub.type,
+                value: sub.value !== '' ? sub.value : '-'
             }
+            data.push(field);
             return 0;
         });
 
@@ -99,12 +96,22 @@ function CriteriaFiveDetails(props) {
                             sub.value = doc.data.subCategory1.designation;
                         } else if (sub.title === "Publications" && doc.data.subCategory1.publications !== "") {
                             sub.value = doc.data.subCategory1.publications;
-                        } else if (sub.title === "Joining Date" && doc.data.subCategory1.joiningDate !== "") {
+                        } else if (sub.title === "Joining Date" && doc.data.subCategory1.joiningDate !== null) {
                             sub.value = doc.data.subCategory1.joiningDate.split('T')[0]
                         } else if (sub.title === "Research Interactions" && doc.data.subCategory1.researchInteractions !== "") {
                             sub.value = doc.data.subCategory1.researchInteractions;
                         } else if (sub.title === "Faculty Qualifications" && doc.data.subCategory1.qualifications !== "") {
                             sub.value = doc.data.subCategory1.qualifications;
+                        } else if (sub.title === "Appointment Letters" && doc.data.subCategory1.appointmentLetters !== "") {
+                            sub.value = doc.data.subCategory1.appointmentLetters;
+                        } else if (sub.title === "Time Table" && doc.data.subCategory1.timeTable !== "") {
+                            sub.value = doc.data.subCategory1.timeTable;
+                        } else if (sub.title === "Salary Statement" && doc.data.subCategory1.salaryStatement !== "") {
+                            sub.value = doc.data.subCategory1.salaryStatement;
+                        } else if (sub.title === "Awards/Certificates" && doc.data.subCategory1.awardsCertificates !== "") {
+                            sub.value = doc.data.subCategory1.awardsCertificates;
+                        } else if (sub.title === "List of Students" && doc.data.subCategory1.listOfStudents !== "") {
+                            sub.value = doc.data.subCategory1.listOfStudents;
                         }
                     }
                     return 0;

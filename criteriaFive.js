@@ -11,6 +11,11 @@ const criteriaFive = new mongoose.Schema({
         joiningDate: Date,
         publications: String,
         researchInteractions: String,
+        appointmentLetters: String,
+        timeTable: String,
+        salaryStatement: String,
+        awardsCertificates: String,
+        listOfStudents: String
     },
     subCategory4: {
         joiningDate: Date,

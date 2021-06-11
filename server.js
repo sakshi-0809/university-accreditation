@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
@@ -40,6 +41,7 @@ app.use(
 app.use(cookieParser('secretcode'))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(fileUpload());
 
 const signToken = userID => {
     return JWT.sign({
@@ -147,6 +149,16 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                             doc.subCategory1.researchInteractions = sub.value;
                         } else if (sub.title === "Faculty Qualifications" && sub.value !== '') {
                             doc.subCategory1.qualifications = sub.value;
+                        } else if (sub.title === "Appointment Letters" && sub.value !== '') {
+                            doc.subCategory1.appointmentLetters = sub.value;
+                        } else if (sub.title === "Time Table" && sub.value !== '') {
+                            doc.subCategory1.timeTable = sub.value;
+                        } else if (sub.title === "Salary Statement" && sub.value !== '') {
+                            doc.subCategory1.salaryStatement = sub.value;
+                        } else if (sub.title === "Awards/Certificates" && sub.value !== '') {
+                            doc.subCategory1.awardsCertificates = sub.value;
+                        } else if (sub.title === "List of Students" && sub.value !== '') {
+                            doc.subCategory1.listOfStudents = sub.value;
                         }
                     }
 
@@ -194,6 +206,7 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                         joiningDate: new Date(),
                         publications: '',
                         researchInteractions: '',
+                        appointmentLetters: '',
                     },
                     subCategory4: {
                         joiningDate: new Date(),
@@ -224,6 +237,16 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                             newData.subCategory1.researchInteractions = sub.value;
                         } else if (sub.title === "Faculty Qualifications") {
                             newData.subCategory1.qualifications = sub.value;
+                        } else if (sub.title === "Appointment Letters") {
+                            newData.subCategory1.appointmentLetters = sub.value;
+                        } else if (sub.title === "Time Table") {
+                            newData.subCategory1.timeTable = sub.value;
+                        } else if (sub.title === "Salary Statement") {
+                            newData.subCategory1.salaryStatement = sub.value;
+                        } else if (sub.title === "Awards/Certificates") {
+                            newData.subCategory1.awardsCertificates = sub.value;
+                        } else if (sub.title === "List of Students") {
+                            newData.subCategory1.listOfStudents = sub.value;
                         }
                     }
 
