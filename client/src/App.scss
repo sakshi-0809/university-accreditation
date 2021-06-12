@@ -23,6 +23,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+    color: #535353;
+}
+
 .register-option {
     color: #001064;
     text-decoration: none;
@@ -37,4 +41,14 @@ body {
 .table {
     margin-top: 20px;
     width: 1000px;
+}
+
+.subcategory-break {
+    border-color: #d7d7d7;
+    border-width: 3px;
+    border-style: solid;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    margin: 0 2%;
 }

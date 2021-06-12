@@ -15,25 +15,15 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Navbar from '../Components/NavbarComponent';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { AuthContext } from '../Context/AuthContext';
-// import FormControl from '@material-ui/core/FormControl';
-// import Select from '@material-ui/core/Select';
-// import CssBaseline from '@material-ui/core/CssBaseline';
 import Alert from '@material-ui/lab/Alert';
 import Link from '@material-ui/core/Link';
-// import RadioGroup from '@material-ui/core/RadioGroup';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormLabel from '@material-ui/core/FormLabel';
-// import Radio from '@material-ui/core/Radio';
-// import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
     title: {
         marginTop: theme.spacing(2)
     },
@@ -72,7 +62,11 @@ const useStyles = makeStyles((theme) => ({
     },
     input: {
         display: 'none'
-    }
+    },
+    progress: {
+        marginLeft: theme.spacing(2),
+        marginTop: theme.spacing(1),
+    },
 }));
 
 function RenderLinks(props) {
@@ -84,15 +78,21 @@ function RenderLinks(props) {
 
     return (
         links.map(link => {
-            return <Link href={link.value} target="blank" color="inherit">
-                {link.title}
-            </Link>
+            return <div>
+                <IconButton color="#D7D7D7">
+                    <InsertDriveFileIcon />
+                </IconButton>
+                <Link href={link.value} target="blank" color="inherit">
+                    {link.title}
+                </Link>
+            </div>
         })
     )
 }
 
 function SubCategory(props) {
     const classes = useStyles();
+    const [loading, setLoading] = useState(false);
     const [links, setLinks] = useState([]);
     const [data, setData] = useState([]);
     const [msgSubmit, setMsgSubmit] = useState({ msg: '', error: false });
@@ -105,7 +105,7 @@ function SubCategory(props) {
     const SubRender = (props) => {
         return (
             props.data.map(sub => {
-                if (sub.type === "text") {
+                if (sub.dataType === "text") {
                     return (
                         <Grid key={sub.title} item xs={6}>
                             <TextField
@@ -122,7 +122,7 @@ function SubCategory(props) {
                             />
                         </Grid>
                     )
-                } else if (sub.type === "textArea") {
+                } else if (sub.dataType === "textArea") {
                     return (
                         <Grid key={sub.title} item xs={6}>
                             <TextField
@@ -141,7 +141,7 @@ function SubCategory(props) {
                             />
                         </Grid>
                     )
-                } else if (sub.type === "date") {
+                } else if (sub.dataType === "date") {
                     return (
                         <Grid key={sub.title} item xs={6}>
                             <TextField
@@ -161,11 +161,10 @@ function SubCategory(props) {
                             />
                         </Grid>
                     )
-                } else if (sub.type === "upload") {
+                } else if (sub.dataType === "upload") {
                     return (
                         <Grid key={sub.title} item xs={6}>
                             <input
-                                // accept="image/*"
                                 id={sub.title}
                                 multiple
                                 type="file"
@@ -181,6 +180,7 @@ function SubCategory(props) {
                         </Grid>
                     )
                 }
+                return 0;
             }))
     }
 
@@ -211,9 +211,9 @@ function SubCategory(props) {
     const handleChange = (e) => {
         data.map(sub => {
             if (sub.title === e.target.name) {
-                if (sub.type === "date") {
+                if (sub.dataType === "date") {
                     sub.value = e.target.value.toString();
-                } else if (sub.type === "upload") {
+                } else if (sub.dataType === "upload") {
                     sub.value = e.target.files[0];
 
                     const url = 'https://api.cloudinary.com/v1_1/dbfaofb93/image/upload';
@@ -222,7 +222,7 @@ function SubCategory(props) {
                     formData.append('file', e.target.files[0]);
                     formData.append('upload_preset',
                         "ml_default");
-
+                    setLoading(true);
                     fetch(url, {
                         method: "POST",
                         body: formData
@@ -230,7 +230,22 @@ function SubCategory(props) {
                         return res.json()
                     }).then((data) => {
                         sub.value = data.url;
-                        setLinks([...links, { title: sub.title, value: data.url }]);
+                        let tempLinks = [...links];
+                        let exists = false;
+                        tempLinks.map(link => {
+                            if (sub.title === link.title) {
+                                exists = true;
+                                link.value = data.url;
+                            }
+                            return 0;
+                        })
+                        if (!exists) {
+                            setLinks([...links, { title: sub.title, value: data.url }]);
+                        } else {
+                            setLinks([...tempLinks]);
+                        }
+                        setLoading(false);
+
                         console.log(sub.value);
                     })
                 } else {
@@ -248,9 +263,11 @@ function SubCategory(props) {
                 {props.subCategoryHeading}
             </Typography>
 
-            <Typography className={classes.uploadLinks}>
-                Uploaded Files
-            </Typography>
+            <Grid container>
+                {props.uploadPresent ? <Typography className={classes.uploadLinks}> Uploaded Files </Typography> : null}
+
+                {loading ? <CircularProgress className={classes.progress} /> : null}
+            </Grid>
 
             <RenderLinks data={links} />
 
@@ -273,19 +290,19 @@ function SubCategory(props) {
     )
 }
 
-function SubSubCategory(props) {
-    const classes = useStyles();
+// function SubSubCategory(props) {
+//     const classes = useStyles();
 
-    return (
-        <>
-            <Grid container spacing={2}>
-                <Typography className={classes.subSubCategory}>
-                    {props.subSubCategory}
-                </Typography>
-            </Grid>
-        </>
-    )
-}
+//     return (
+//         <>
+//             <Grid container spacing={2}>
+//                 <Typography className={classes.subSubCategory}>
+//                     {props.subSubCategory}
+//                 </Typography>
+//             </Grid>
+//         </>
+//     )
+// }
 
 function CriteriaFive(props) {
     const classes = useStyles();
@@ -302,7 +319,7 @@ function CriteriaFive(props) {
             const field = {
                 key: sub.key,
                 title: sub.title,
-                type: sub.type,
+                dataType: sub.dataType,
                 value: ''
             }
             data1.push(field);
@@ -313,7 +330,7 @@ function CriteriaFive(props) {
             const field = {
                 key: sub.key,
                 title: sub.title,
-                type: sub.type,
+                dataType: sub.dataType,
                 value: ''
             }
             data5.push(field);
@@ -324,7 +341,7 @@ function CriteriaFive(props) {
             const field = {
                 key: sub.key,
                 title: sub.title,
-                type: sub.type,
+                dataType: sub.dataType,
                 value: ''
             }
             data6.push(field);
@@ -345,7 +362,8 @@ function CriteriaFive(props) {
                 Faculty Infomation and Contribution
             </Typography>
 
-            <SubCategory subCategoryHeading={"Student Faculty Ratio"} subCategoryData={subCategoryData1} />
+            <SubCategory subCategoryHeading={"Student Faculty Ratio"} subCategoryData={subCategoryData1} uploadPresent={true} />
+            <hr className="subcategory-break" />
             {/* 
             <SubCategory subCategoryHeading={"Faculty Cadre Proportion"} />
 
@@ -353,10 +371,11 @@ function CriteriaFive(props) {
 
             <SubCategory subCategoryHeading={"Faculty Retention"} /> */}
 
-            <SubCategory subCategoryHeading={"Faculty Competencies in correlation to Program Specific Criteria"} subCategoryData={subCategoryData5} />
+            <SubCategory subCategoryHeading={"Faculty Competencies in correlation to Program Specific Criteria"} subCategoryData={subCategoryData5} uploadPresent={false} />
+            <hr className="subcategory-break" />
 
-            <SubCategory subCategoryHeading={"Innovations by the Faculty in Teaching and Learning"} subCategoryData={subCategoryData6} />
-
+            <SubCategory subCategoryHeading={"Innovations by the Faculty in Teaching and Learning"} subCategoryData={subCategoryData6} uploadPresent={false} />
+            <hr className="subcategory-break" />
             {/* <SubCategory subCategoryHeading={"Faculty as Participants in Faculty Development/Training Activities/STTPs"} />
 
             <SubCategory subCategoryHeading={"Research and Development"} />

@@ -135,54 +135,8 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
             if (err)
                 res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
             if (doc) {
-                req.body.data.map(sub => {
-                    if (sub.key === "subCategory1") {
-                        if (sub.title === "Designation" && sub.value !== '') {
-                            doc.subCategory1.designation = sub.value;
-                        } else if (sub.title === "Salary Details" && sub.value !== '') {
-                            doc.subCategory1.salary = sub.value;
-                        } else if (sub.title === "Publications" && sub.value !== '') {
-                            doc.subCategory1.publications = sub.value;
-                        } else if (sub.title === "Joining Date" && sub.value !== '') {
-                            doc.subCategory1.joiningDate = sub.value;
-                        } else if (sub.title === "Research Interactions" && sub.value !== '') {
-                            doc.subCategory1.researchInteractions = sub.value;
-                        } else if (sub.title === "Faculty Qualifications" && sub.value !== '') {
-                            doc.subCategory1.qualifications = sub.value;
-                        } else if (sub.title === "Appointment Letters" && sub.value !== '') {
-                            doc.subCategory1.appointmentLetters = sub.value;
-                        } else if (sub.title === "Time Table" && sub.value !== '') {
-                            doc.subCategory1.timeTable = sub.value;
-                        } else if (sub.title === "Salary Statement" && sub.value !== '') {
-                            doc.subCategory1.salaryStatement = sub.value;
-                        } else if (sub.title === "Awards/Certificates" && sub.value !== '') {
-                            doc.subCategory1.awardsCertificates = sub.value;
-                        } else if (sub.title === "List of Students" && sub.value !== '') {
-                            doc.subCategory1.listOfStudents = sub.value;
-                        }
-                    }
-
-                    else if (sub.key === "subCategory5") {
-                        console.log(sub.value);
-                        if (sub.title === "Specialization" && sub.value !== '') {
-                            doc.subCategory5.specialization = sub.value;
-                        } else if (sub.title === "Course Developments" && sub.value !== '') {
-                            doc.subCategory5.courseDevelopments = sub.value;
-                        } else if (sub.title === "Research Publication" && sub.value !== '') {
-                            doc.subCategory5.publications = sub.value;
-                        }
-                    }
-
-                    else if (sub.key === "subCategory6") {
-                        if (sub.title === "WorkShops Arranged" && sub.value !== '') {
-                            doc.subCategory5.workshops = sub.value;
-                        } else if (sub.title === "Course Modules Developed" && sub.value !== '') {
-                            doc.subCategory5.courseModules = sub.value;
-                        } else if (sub.title === "Short Term Courses" && sub.value !== '') {
-                            doc.subCategory5.shortTermCourses = sub.value;
-                        }
-                    }
-                });
+                doc.data = [...req.body.data]
+                console.log(doc.data);
 
                 await doc.save(err => {
                     if (err) {
@@ -199,76 +153,7 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
                     department: req.body.department,
                     name: req.body.name,
                     email: req.body.email,
-                    subCategory1: {
-                        salary: 0,
-                        designation: '',
-                        qualifications: '',
-                        joiningDate: new Date(),
-                        publications: '',
-                        researchInteractions: '',
-                        appointmentLetters: '',
-                    },
-                    subCategory4: {
-                        joiningDate: new Date(),
-                    },
-                    subCategory5: {
-                        specialization: '',
-                        publications: '',
-                        courseDevelopments: '',
-                    },
-                    subCategory6: {
-                        workshops: '',
-                        courseModules: '',
-                        shortTermCourses: ''
-                    }
-                });
-
-                req.body.data.map(sub => {
-                    if (sub.key === "subCategory1") {
-                        if (sub.title === "Designation") {
-                            newData.subCategory1.designation = sub.value;
-                        } else if (sub.title === "Salary Details") {
-                            newData.subCategory1.salary = sub.value;
-                        } else if (sub.title === "Publications") {
-                            newData.subCategory1.publications = sub.value;
-                        } else if (sub.title === "Joining Date") {
-                            newData.subCategory1.joiningDate = sub.value;
-                        } else if (sub.title === "Research Interactions") {
-                            newData.subCategory1.researchInteractions = sub.value;
-                        } else if (sub.title === "Faculty Qualifications") {
-                            newData.subCategory1.qualifications = sub.value;
-                        } else if (sub.title === "Appointment Letters") {
-                            newData.subCategory1.appointmentLetters = sub.value;
-                        } else if (sub.title === "Time Table") {
-                            newData.subCategory1.timeTable = sub.value;
-                        } else if (sub.title === "Salary Statement") {
-                            newData.subCategory1.salaryStatement = sub.value;
-                        } else if (sub.title === "Awards/Certificates") {
-                            newData.subCategory1.awardsCertificates = sub.value;
-                        } else if (sub.title === "List of Students") {
-                            newData.subCategory1.listOfStudents = sub.value;
-                        }
-                    }
-
-                    else if (sub.key === "subCategory5") {
-                        if (sub.title === "Specialization") {
-                            newData.subCategory5.specialization = sub.value;
-                        } else if (sub.title === "Course Developments") {
-                            newData.subCategory5.courseDevelopments = sub.value;
-                        } else if (sub.title === "Research Publication") {
-                            newData.subCategory5.publications = sub.value;
-                        }
-                    }
-
-                    else if (sub.key === "subCategory6") {
-                        if (sub.title === "WorkShops Arranged") {
-                            newData.subCategory5.workshops = sub.value;
-                        } else if (sub.title === "Course Modules Developed") {
-                            newData.subCategory5.courseModules = sub.value;
-                        } else if (sub.title === "Short Term Courses") {
-                            newData.subCategory5.shortTermCourses = sub.value;
-                        }
-                    }
+                    data: [...req.body.data],
                 });
 
                 await newData.save(err => {
