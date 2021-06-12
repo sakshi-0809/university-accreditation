@@ -6,6 +6,7 @@ import Department from './DepartmentComponent';
 import Profile from './ProfileComponent';
 import CriteriaFive from '../Criteria/CriteraFive';
 import CriteriaFiveDetails from '../CriteriaDetails/CriteriaFiveDetails';
+import CoordinatorPanel from '../Components/CoordinatorPanelComponent';
 import { AuthContext } from '../Context/AuthContext';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -47,6 +48,7 @@ function Main() {
                 <PrivateRoute path='/profile' component={Profile} isAuthenticated={authContext.isAuthenticated} />
                 <PrivateRoute path='/criteria5' component={CriteriaFive} isAuthenticated={authContext.isAuthenticated} />
                 <PrivateRoute path='/criteria5details' component={CriteriaFiveDetails} isAuthenticated={authContext.isAuthenticated} />
+                {authContext.user.isCoordinator ? <PrivateRoute path='/coordinator' component={CoordinatorPanel} isAuthenticated={authContext.isAuthenticated} /> : null}
             </ThemeProvider>
         </Switch>
     )

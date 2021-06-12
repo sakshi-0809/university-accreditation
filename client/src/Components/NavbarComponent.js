@@ -50,6 +50,10 @@ function Navbar(props) {
         props.history.push(`/${props.path}`);
     }
 
+    const viewCoordinatorPanel = () => {
+        props.history.push('/coordinator');
+    }
+
     return (
         <div className={classes.root}>
             <AppBar position="static" className={classes.appBar}>
@@ -88,6 +92,7 @@ function Navbar(props) {
                             onClose={handleClose}
                         >
                             <MenuItem onClick={viewDepartment}>{props.path === "department" ? "Department" : "Profile"}</MenuItem>
+                            {authContext.user.isCoordinator ? <MenuItem onClick={viewCoordinatorPanel}>Co-ordinator Panel</MenuItem> : null}
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </div>

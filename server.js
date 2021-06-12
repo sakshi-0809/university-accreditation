@@ -135,8 +135,29 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
             if (err)
                 res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
             if (doc) {
-                doc.data = [...req.body.data]
-                console.log(doc.data);
+                let exists = false;
+                let oldData = [...doc.data];
+                oldData.map(d => {
+                    if (d.key === req.body.data[0].key) {
+                        exists = true;
+                    }
+                })
+
+                if (exists) {
+                    req.body.data.map(d => {
+                        if (d.value !== '') {
+                            for (let i = 0; i < oldData.length; i++) {
+                                if (oldData[i].title === d.title) {
+                                    oldData[i].value = d.value;
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    oldData = [...oldData, ...req.body.data];
+                }
+
+                doc.data = [...oldData];
 
                 await doc.save(err => {
                     if (err) {
