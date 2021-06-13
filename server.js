@@ -192,9 +192,21 @@ app.post('/updatedetails', passport.authenticate('jwt', { session: false }), (re
 });
 
 app.get('/fetchcriteria5', passport.authenticate('jwt', { session: false }), (req, res) => {
-    // const { name, email, _id, department, isCoordinator } = req.user;
     const { email } = req.user;
     CriteriaFive.findOne({ email: email }, async (err, doc) => {
+        if (err)
+            res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
+        if (doc) {
+            res.status(200).json({ message: { msgBody: 'Success', msgError: false }, data: doc });
+        } else if (!doc) {
+            res.status(200).json({ message: { msgBody: 'Data not found', msgError: true } });
+        }
+    })
+})
+
+app.get('/departmentfaculty', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { department } = req.user;
+    CriteriaFive.find({ department: department }, async (err, doc) => {
         if (err)
             res.status(500).json({ message: { msgBody: 'Error has occured', msgError: true } });
         if (doc) {
